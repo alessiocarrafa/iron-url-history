@@ -1,0 +1,110 @@
+<dom-module id="iron-url-history">
+	<template>
+
+		<style>
+			:host
+			{
+				display:block;
+			}
+		</style>
+
+		<iron-meta id="meta" key="history" value="{{history}}"></iron-meta>
+
+	</template>
+</dom-module>
+<script>
+	Polymer({
+
+		is: 'iron-url-history',
+		properties:
+		{
+			history: { type: Object }
+		},
+		goto: function( url )
+		{
+			this.pushLocation(url);
+			page( url );
+		},
+		pushLocation: function( url, adds )
+		{
+			if( !this.$.meta.byKey('history') ){ this.history = { width : 0, observed : 0, urls : [] }; console.info('Url\'s history inited'); } 
+
+			var cur = this.$.meta.byKey('history');
+
+			cur.urls.push(
+				{
+					url : url,
+					date: Date.now(),
+					adds : adds
+				}
+			);
+
+			cur.width++;
+
+			//normal case
+			if( cur.observed === cur.width )
+			{
+				cur.observed++;
+			}
+			else if( cur.observed < cur.width )
+			{
+				cur.observed = cur.width;
+			}
+
+			console.info('Added "' + url + '" as url');
+			this.fire( 'historyChange', cur );
+
+		},
+		getCurrent: function()
+		{
+			var cur = this.$.meta.byKey('history');
+			if( cur.urls )
+			{
+				return cur.urls[ cur.observed - 1 ];
+			}
+			return null;
+		},
+		getBack:  function()
+		{
+			var cur = this.$.meta.byKey('history');
+			if( cur.observed > 1  )
+			{
+				
+				cur.observed--;
+
+				var step = this.getCurrent();
+				cur.urls.push(
+					{
+						url : step.url,
+						date: Date.now(),
+						adds : step.adds
+					}
+				);
+
+				cur.width++;
+
+				this.fire( 'observedChange', cur );
+				return this.getCurrent();
+			}
+			return null;
+			
+		},
+		getForward: function()
+		{
+			var cur = this.$.meta.byKey('history');
+			if( cur.observed < cur.width  )
+			{
+				cur.observed++;
+				this.fire( 'observedChange', cur );
+				return this.getCurrent();
+			}
+			return null;
+		},
+		getHistory: function()
+		{
+			var cur = this.$.meta.byKey('history');
+			return cur.urls;
+		}
+
+	});
+</script>

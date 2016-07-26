@@ -1,0 +1,30 @@
+{
+  "name": "paper-fab-menu",
+  "version": "1.0.0",
+  "authors": [
+    "Alessio Carrafa <alessio.carrafa@hotmail.it>"
+  ],
+  "description": "Polymer component for urls history navigation",
+  "main": "iron-url-history.html",
+  "keywords": [
+    "iron",
+    "url",
+    "history",
+    "navigation",
+    "polymer",
+    "web-components"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alessiocarrafa/iron-url-history.git"
+  },
+  "license": "MIT",
+  "homepage": "",
+  "dependencies": {
+    "polymer": "^1.6.0",
+    "iron-meta": "PolymerElements/iron-meta#^1.1.1",
+    "paper-fab": "PolymerElements/paper-fab#^1.2.0",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.9",
+    "paper-button": "PolymerElements/paper-button#^1.0.12"
+  }
+}

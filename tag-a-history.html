@@ -1,0 +1,54 @@
+<dom-module id="tag-a-history">
+	<template>
+
+		<style>
+			:host
+			{
+				display:block;
+			}
+		</style>
+
+		<iron-url-history id="history"></iron-url-history>
+
+		<content></content>
+
+	</template>
+</dom-module>
+<script>
+	Polymer({
+
+		is: 'tag-a-history',
+		extends: 'a',
+		properties:
+		{
+			path:
+			{
+				type: String,
+				computed: 'computeRoutePath(href,__hash)'
+			},
+			__hash:
+			{
+				type: String,
+				computed: 'computeHashPath(href)'
+			}
+		},
+		listeners:
+		{
+			'tap': 'regularTap'
+		},
+		computeRoutePath: function()
+		{
+			return this.hashRoot ? this.__hash : this.href;
+        },
+		computeHashPath: function()
+		{
+			var pos = this.href.indexOf('#');
+			return ( pos > -1 ) ? this.href.substr( pos ) : null;
+		},
+		regularTap: function(e)
+		{
+			this.$.history.pushLocation( this.path );
+		}
+
+	});
+</script>

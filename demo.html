@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>&#x3C;iron-url-history&#x3E; demo page</title>
+		<script src="../webcomponentsjs/webcomponents-lite.js"></script>
+		<link rel="import" href="../iron-meta/iron-meta.html">
+		<link rel="import" href="../iron-icons/iron-icons.html">
+		<link rel="import" href="../paper-button/paper-button.html">
+		<link rel="import" href="../paper-fab/paper-fab.html">
+		<link rel="import" href="./iron-url-history.html">
+		<link rel="import" href="./tag-a-history.html">
+		<script>
+
+			var console = ( function( oldCons )
+			{
+				return {
+					log: function( text )
+					{
+						oldCons.log(text);
+
+						var el = document.createElement("P");
+						el.innerHTML = '<p>[ LOG ] ' + text + '</p>';
+						document.getElementById('print_area').appendChild( el );
+					},
+					info: function( text )
+					{
+						oldCons.info(text);
+						
+						var el = document.createElement("P");
+						el.innerHTML = '<p>[ INFO ] ' + text + '</p>';
+						document.getElementById('print_area').appendChild( el );
+					},
+					warn: function( text )
+					{
+						oldCons.warn(text);
+						
+						var el = document.createElement("P");
+						el.innerHTML = '<p>[ WARN ] ' + text + '</p>';
+						document.getElementById('print_area').appendChild( el );
+					},
+					error: function( text )
+					{
+						oldCons.error(text);
+						
+						var el = document.createElement("P");
+						el.innerHTML = '<p>[ ERR ] ' + text + '</p>';
+						document.getElementById('print_area').appendChild( el );
+					}
+				};
+			}( window.console ) );
+
+			window.console = console;
+
+			addEventListener( 'WebComponentsReady', function()
+			{
+				var t = document.querySelector("#app");
+				
+				t.where = function() 
+				{
+					var el = document.querySelector("#history");
+					var history = el.getHistory();
+					if( history )
+					{
+						var last = el.getCurrent();
+						if( last ) console.log( 'You are @ "' + last.url + '" since ' + ( new Date( last.date ) ).toLocaleString() );
+						else console.error('An error occurred');
+					}
+					else console.error('History not inited');
+				};
+
+				t.back = function()
+				{
+					var el = document.querySelector("#history");
+					var history = el.getHistory();
+					if( history )
+					{
+						var pre_last = el.getBack();
+						if( pre_last ) console.log( 'You are going back to @ "' + pre_last.url + '", you were here on ' + ( new Date( pre_last.date ) ).toLocaleString() );
+						else console.log('No previous step in navigation history has been found');
+					}
+					else console.error('History not inited');
+				};
+
+				t.forward = function()
+				{
+					var el = document.querySelector("#history");
+					var history = el.getHistory();
+					if( history )
+					{
+						var pre_last = el.getForward();
+						if( pre_last ) console.log( 'You are going forward to @ "' + pre_last.url + '", you were here on ' + ( new Date( pre_last.date ) ).toLocaleString() );
+						else console.log('No future step in navigation history has been found');
+					}
+					else console.error('History not inited');
+				};
+
+			});
+
+			addEventListener( 'historyChange', function(e)
+			{
+				document.querySelector("#list_view").setAttribute( 'history', JSON.stringify( e.detail ) );
+			});
+			addEventListener( 'observedChange', function(e)
+			{
+				document.querySelector("#list_view").setAttribute( 'history', JSON.stringify( e.detail ) );
+			});
+
+		</script>
+	</head>
+	<body>
+		<template is="dom-bind" id="app">
+			<style is="custom-style">
+				*
+				{
+					margin:0;
+					padding:0;
+				}
+				html, body
+				{
+					width:100%;
+					height:100%;
+				}
+				.main-table
+				{
+					width: 100%;
+				}
+				a
+				{
+					margin:1em 0;
+				}
+				paper-button
+				{
+					color: #FFF;
+					padding: 0 1em;
+					margin: 1em;
+					height: 3.75em;
+					line-height: 3.75em;
+					--paper-button: {
+						background-color: var(--paper-blue-500);
+					};
+				}
+				.fake_page
+				{
+					width: 100% !important;
+				}
+				.half
+				{
+					width:50%;
+					display:inline-block;
+					float: left;
+					padding:1em;
+					box-sizing: border-box;
+					min-height: 100%;
+				}
+				#print_area
+				{
+					width:100%;
+				}
+			</style>
+
+			<iron-url-history id="history" history={{history}}></iron-url-history>
+
+			<div class="half" style="border-right:1px solid #CCC;">
+				<h2>Page 1</h2>
+				<table class="fake_page">
+					<tr valign="top">
+						<td width="25%" align="center">
+
+							<a is="tag-a-history" hash-root href="#/amazing_link1/"><paper-fab label="Amazing Link 1" icon="done"></paper-fab></a>
+							<a is="tag-a-history" hash-root href="#/amazing_link2/"><paper-fab label="Amazing Link 2" icon="info"></paper-fab></a>
+							<a is="tag-a-history" hash-root href="#/amazing_link3/"><paper-fab label="Amazing Link 3" icon="list"></paper-fab></a>
+							<a is="tag-a-history" hash-root href="#/amazing_link4/"><paper-fab label="Amazing Link 4" icon="link"></paper-fab></a>
+							<a is="tag-a-history" hash-root href="#/amazing_link5/"><paper-fab label="Amazing Link 5" icon="face"></paper-fab></a>
+							<a is="tag-a-history" hash-root href="#/amazing_link6/"><paper-fab label="Amazing Link 6" icon="code"></paper-fab></a>
+
+						</td>
+						<td width="75%" >
+							<h2>Log Area</h2>
+							<div id="print_area"></div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="half">
+				<h2>Page 2</h2>
+				
+					<paper-button raised on-tap="where">Where am i?</paper-button>
+					<paper-button raised on-tap="back">Go Back</paper-button>
+					<paper-button raised on-tap="forward">Go Forward</paper-button>
+
+					<dom-module id="url-list">
+						<template>
+							<style>
+								.highlighted
+								{
+									background-color: #2196f3;
+									color:#FFF;
+								}
+							</style>
+							
+							<template is="dom-if" if="{{history.urls.length}}">
+								<table width="100%" cellpadding="0" cellspacing="0" border="1">
+									<tr>
+										<th>History Lenght</th>
+										<th>Observed Step</th>
+									</tr>
+									<tr align="center">
+										<td>{{history.width}}</td>
+										<td>{{history.observed}}</td>
+									</tr>
+								</table>
+								</br></br>
+								<table width="100%" cellpadding="0" cellspacing="0" border="1">
+									<tr>
+										<th>Step</th>
+										<th>Url</th>
+										<th>Date</th>
+										<th>Observed</th>
+									</tr>
+									<template is="dom-repeat" items="{{history.urls}}">
+										<tr align="center" class$="{{_color(index,history.observed)}}">
+											<td>{{index}}</td>
+											<td>{{item.url}}</td>
+											<td>{{printDate(item.date)}}</td>
+											<td>
+												<template is="dom-if" if="{{_observ(index,history.observed)}}">V</template>
+											</td>
+										</tr>
+									</template>
+								</table>
+							</template>
+						</template>
+
+						<script>
+							Polymer({
+
+								is: 'url-list',
+								properties:
+								{
+									history:
+									{
+										type: Object,
+										value: function(){ return {}; }
+									}
+								},
+								_observ: function( index, observed )
+								{
+									return ( index === ( observed - 1 ) )
+								},
+								_color: function( index, observed )
+								{
+									return ( index === ( observed - 1 ) ) ? 'highlighted' : '';
+								},
+								printDate: function( date )
+								{
+									return ( new Date( date ) ).toLocaleString();
+								}
+
+							});
+
+						</script>
+
+					</dom-module>
+					<url-list id="list_view"></url-list>
+
+			</div>
+
+		</template>
+	</body>
+</html>
