@@ -9,12 +9,13 @@ share additional information aboute navigation timeline.
 The following methods are available for call:
 
 | Method | Inputs | Outputs | Description |
-| goto | url (string) | null | Simulate href redirection and store the url in navigation history |
-| pushLocation | url (string), adds (object) | null | Push the url into navigation history and store additional user's defined information about that |
-| getCurrent | null | { url (string), date (date), adds (object) } | Get the current view information |
-| getBack | null | { url (string), date (date), adds (object) } | Get the previous view information |
-| getForward | null | { url (string), date (date), adds (object) } | Get the previous view information |
-| getHistory | null | [ { url (string), date (date), adds (object) } ] | Get the entire view history information |
+| --- | --- | --- | --- |
+| `goto` | url (string) | null | Simulate href redirection and store the url in navigation history |
+| `pushLocation` | url (string), adds (object) | null | Push the url into navigation history and store additional user's defined information about that |
+| `getCurrent` | null | { url (string), date (date), adds (object) } | Get the current view information |
+| `getBack` | null | { url (string), date (date), adds (object) } | Get the previous view information |
+| `getForward` | null | { url (string), date (date), adds (object) } | Get the previous view information |
+| `getHistory` | null | [ { url (string), date (date), adds (object) } ] | Get the entire view history information |
 
 To install the component with the Bower, just run: 
 
